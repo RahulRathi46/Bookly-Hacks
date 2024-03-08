@@ -67,11 +67,12 @@ services:
       - n8n_data:/home/node/.n8n
 
   app:
-    image: "app"
+    build: .
     restart: always
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.bookly.rule=Host(`${SUBDOMAIN}.${DOMAIN_NAME}/bookly`)"
+      - "traefik.http.routers.app-contacts.rule==Path(`/bookly`)"
       - "traefik.http.routers.bookly.entrypoints=web,websecure"
       - "traefik.http.routers.bookly.tls=true"
       - "traefik.http.routers.bookly.tls.certresolver=mytlschallenge"
