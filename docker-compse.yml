@@ -65,11 +65,10 @@ services:
       - NODE_FUNCTION_ALLOW_EXTERNAL=*
     volumes:
       - n8n_data:/home/node/.n8n
+
   app:
     build: .
     restart: always
-    ports:
-      - "80:5000"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.bookly.rule=Host(`${SUBDOMAIN}.${DOMAIN_NAME}/bookly`)"
@@ -77,8 +76,10 @@ services:
       - "traefik.http.routers.bookly.tls=true"
       - "traefik.http.routers.bookly.tls.certresolver=mytlschallenge"
     environment:
-      FLASK_APP: app.py
-      FLASK_ENV: development
+      - FLASK_APP=app.py
+      - FLASK_ENV=development
+    ports:
+      - "5000:5000"
 
 volumes:
   traefik_data:
