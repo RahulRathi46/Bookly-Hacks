@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 import re
 import random
 import requests
@@ -6,6 +7,8 @@ import json
 from bs4 import BeautifulSoup
 
 app = Flask(__name__)
+
+CORS(app)
 
 user_agents = [
     # Windows User-Agents
@@ -51,7 +54,7 @@ def get_booking_details():
     base_url = request_data.get('base_url')
 
     # Check if all required fields are present
-    if not therapist_id or not loc_id or not service_id or not auth_token or not base_url:
+    if not all([therapist_id, loc_id, service_id, auth_token, base_url]):
         return jsonify({'error': 'Missing required fields in JSON data'}), 400
 
     # URL of the slots page
@@ -79,10 +82,7 @@ def get_booking_details():
             pattern = re.compile(r'bookly-form-\w+')
             bookly_form = soup.find('div', id=pattern)
 
-            if bookly_form:
-                bookly_form_id = bookly_form['id']
-            else:
-                bookly_form_id = None
+            bookly_form_id = bookly_form['id'].split('-')[-1] if bookly_form else None
 
             # Get PHPSESSID cookie value
             phpsessid_cookie = session.cookies.get('PHPSESSID')
@@ -90,36 +90,20 @@ def get_booking_details():
             # Find the <script> tag with ID "bookly-globals-js-extra"
             script_tag = soup.find('script', id='bookly-globals-js-extra')
 
-            if script_tag:
-                # Extract the JavaScript content from the <script> tag
-                script_content = script_tag.string
-
-                # Extract the JSON string from the JavaScript content using regex
-                json_match = re.search(r'{.*}', script_content)
-                if json_match:
-                    json_string = json_match.group(0)
-
-                    # Convert the JSON string to a Python dictionary
-                    bookly_l10n_global = json.loads(json_string)
-
-                    # Extract csrf_token
-                    csrf_token = bookly_l10n_global.get('csrf_token')
-                else:
-                    csrf_token = None
-            else:
-                csrf_token = None
+            script_content = script_tag.string if script_tag else ''
+            csrf_token_match = re.search(r'(?<=csrf_token":")\w+', script_content)
+            csrf_token = csrf_token_match.group(0) if csrf_token_match else None
 
             # Prepare response
             response_data = {
-                'bookly_form_id': bookly_form_id.split('-')[-1],
+                'bookly_form_id': bookly_form_id,
                 'phpsessid_cookie': phpsessid_cookie,
                 'csrf_token': csrf_token,
-                "url": url,
+                'url': url,
                 'headers': headers
             }
 
             return jsonify(response_data), 200
-
         else:
             return jsonify(
                 {'error': f'Failed to fetch page. Status code: {response.status_code}'}), response.status_code
