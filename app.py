@@ -114,7 +114,8 @@ def get_booking_details():
                 'bookly_form_id': bookly_form_id.split('-')[-1],
                 'phpsessid_cookie': phpsessid_cookie,
                 'csrf_token': csrf_token,
-                "url": url
+                "url": url,
+                'headers': headers
             }
 
             return jsonify(response_data), 200
