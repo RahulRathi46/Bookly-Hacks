@@ -71,7 +71,7 @@ services:
     restart: always
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.bookly.rule=Host(`${SUBDOMAIN}.${DOMAIN_NAME}`)"
+      - "traefik.http.routers.bookly.rule=Host(`${SUBDOMAIN_2}.${DOMAIN_NAME}`)"
       - "traefik.http.routers.bookly.entrypoints=web,websecure"
       - "traefik.http.routers.bookly.tls=true"
       - "traefik.http.routers.bookly.tls.certresolver=mytlschallenge"
