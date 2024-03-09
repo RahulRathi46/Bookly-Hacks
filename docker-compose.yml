@@ -80,9 +80,6 @@ services:
       - FLASK_ENV=development
     ports:
       - "5000:5000"
-    volumes:
-      - ./cert.pem:/app/cert.pem
-      - ./key.pem:/app/key.pem
 
 volumes:
   traefik_data:
