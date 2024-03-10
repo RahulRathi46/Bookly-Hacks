@@ -6,8 +6,7 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 
-CORS(app, supports_credentials=True,
-     expose_headers=['Access-Control-Allow-Origin', 'Access-Control-Allow-Credentials', 'PHPSESSID'])
+CORS(app, supports_credentials=True,expose_headers=['Access-Control-Allow-Origin', 'Access-Control-Allow-Credentials', 'PHPSESSID'])
 
 
 @app.route('/get_booking_details', methods=['POST'])
@@ -19,7 +18,6 @@ def get_booking_details():
     therapist_id = request_data.get('therapist_id')
     loc_id = request_data.get('loc_id')
     service_id = request_data.get('service_id')
-    php_sessid = request_data.get('PHPSESSID')
     auth_token = request_data.get('auth_token')
     base_url = request_data.get('base_url')
 
@@ -37,8 +35,7 @@ def get_booking_details():
 
     # Define the headers for the outgoing request
     headers = {
-        'User-Agent': user_agent,
-        'Cookie': f'PHPSESSID={php_sessid}'  # Include PHPSESSID cookie in the headers
+        'User-Agent': user_agent
     }
 
     # Create a session to handle cookies
@@ -73,8 +70,7 @@ def get_booking_details():
                 'phpsessid_cookie': phpsessid_cookie,
                 'csrf_token': csrf_token,
                 'url': url,
-                'headers': headers,
-                'cookies': cookies
+                'headers': headers
             }
 
             return jsonify(response_data), 200
