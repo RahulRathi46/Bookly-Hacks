@@ -78,7 +78,7 @@ def get_booking_details():
                 'csrf_token': csrf_token,
                 'url': url,
                 'headers': headers,
-                'request_cookie': cookies
+                'request_cookie': cookies,
                 'cookies': cookies
             }
 
