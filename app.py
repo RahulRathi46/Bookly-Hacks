@@ -6,7 +6,9 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 
-CORS(app, supports_credentials=True, expose_headers=['Access-Control-Allow-Origin', 'Access-Control-Allow-Credentials', 'PHPSESSID'])
+CORS(app, supports_credentials=True,
+     expose_headers=['Access-Control-Allow-Origin', 'Access-Control-Allow-Credentials', 'PHPSESSID'])
+
 
 @app.route('/get_booking_details', methods=['POST'])
 def get_booking_details():
@@ -17,6 +19,7 @@ def get_booking_details():
     therapist_id = request_data.get('therapist_id')
     loc_id = request_data.get('loc_id')
     service_id = request_data.get('service_id')
+    php_sessid = request_data.get('PHPSESSID')
     auth_token = request_data.get('auth_token')
     base_url = request_data.get('base_url')
 
@@ -37,10 +40,15 @@ def get_booking_details():
         'User-Agent': user_agent
     }
 
+    # Include PHPSESSID cookie in the request
+    cookies = {
+        'PHPSESSID': php_sessid
+    }
+
     # Create a session to handle cookies
     with requests.Session() as session:
         # Send a GET request to the slots page with the User-Agent header
-        response = session.get(url, headers=headers)
+        response = session.get(url, headers=headers, cookies=cookies)
 
         # Check if the request was successful
         if response.ok:
@@ -70,6 +78,7 @@ def get_booking_details():
                 'csrf_token': csrf_token,
                 'url': url,
                 'headers': headers,
+                'request_cookie': cookies
                 'cookies': cookies
             }
 
