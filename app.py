@@ -37,18 +37,14 @@ def get_booking_details():
 
     # Define the headers for the outgoing request
     headers = {
-        'User-Agent': user_agent
-    }
-
-    # Include PHPSESSID cookie in the request
-    cookies = {
-        'PHPSESSID': php_sessid
+        'User-Agent': user_agent,
+        'Cookie': f'PHPSESSID={php_sessid}'  # Include PHPSESSID cookie in the headers
     }
 
     # Create a session to handle cookies
     with requests.Session() as session:
         # Send a GET request to the slots page with the User-Agent header
-        response = session.get(url, headers=headers, cookies=cookies)
+        response = session.get(url, headers=headers)
 
         # Check if the request was successful
         if response.ok:
@@ -78,7 +74,6 @@ def get_booking_details():
                 'csrf_token': csrf_token,
                 'url': url,
                 'headers': headers,
-                'request_cookie': cookies,
                 'cookies': cookies
             }
 
