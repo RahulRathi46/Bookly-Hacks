@@ -6,7 +6,7 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 
-CORS(app)
+CORS(app, supports_credentials=True)  # Enable CORS with credentials support
 
 @app.route('/get_booking_details', methods=['POST'])
 def get_booking_details():
