@@ -41,7 +41,7 @@ def get_booking_details():
     # Create a session to handle cookies
     with requests.Session() as session:
         # Send a GET request to the slots page with the User-Agent header
-        response = session.get(url, headers=headers)
+        response = session.get(url, headers=headers, cookies=cookies)
 
         # Check if the request was successful
         if response.ok:
@@ -69,6 +69,7 @@ def get_booking_details():
                 'bookly_form_id': bookly_form_id,
                 'phpsessid_cookie': phpsessid_cookie,
                 'csrf_token': csrf_token,
+                'cookie_used': cookies,
                 'url': url,
                 'headers': headers
             }
@@ -85,4 +86,4 @@ def home():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5001)
